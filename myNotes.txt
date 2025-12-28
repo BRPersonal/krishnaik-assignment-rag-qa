@@ -20,15 +20,40 @@ You are all set
 
 Test docker build in local
 docker build -t rag-qa-test .
-docker run -p 8000:8000 --env-file .env rag-qa-test
+docker run --rm --name="rag-qa-test" -p 8000:8000 --env-file .env rag-qa-test
 
 Browse the urls
 http://localhost:8000/health
 http://localhost:8000/config-check
 http://localhost:8000/docs
 
+After finishing remove the image
+docker rmi rag-qa-test
+
 Refer claude chat
 https://claude.ai/share/7a6359c6-9696-429a-85de-99a08ed89901
+
+Debugging
+---------
+docker build was failing with error
+ERROR: failed to build: failed to solve: error getting credentials - err: exec: "docker-credential-desktop": executable file not found in $PATH, out: 
+
+$ find /Applications/Docker.app -name "docker-credential-desktop" 2>/dev/null
+/Applications/Docker.app/Contents/Resources/bin/docker-credential-desktop
+
+export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin"
+
+Now docker build command worked
+Add this export permanently to ~/.zshrc
+
+#Let it be as it is
+$ cat ~/.docker/config.json
+{
+	"auths": {},
+	"credsStore": "desktop",
+	"currentContext": "desktop-linux"
+}
+
 
 Github Workflow steps
 ---------
